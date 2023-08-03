@@ -108,8 +108,8 @@ func InitDB() (*sql.DB){
 
 
 var (
-	OIDCClientID        string = "cilogon:/client_id/385a98bfe7c6c5699ee5da7ccdb37157"
-	OIDCClientSecret    string = "G79dobp9BVoMBr3a2gmz7s0IiTaBj_vNANXWI2rwP-PT64q6Na-pN3_uUJfWe7svBkJApQxpVxlASHaP6Qyd7w"
+	OIDCClientID        string = "YOUR OIDC CLIENT ID"
+	OIDCClientSecret    string = "YOUR OIDC CLIENT SECRET"
 	OIDCScope           string = "openid profile email org.cilogon.userinfo"
 	DeviceAuthEndpoint  string = "https://cilogon.org/oauth2/device_authorization"
 	TokenEndpoint       string = "https://cilogon.org/oauth2/token"
@@ -373,17 +373,13 @@ func cliRegisterNamespace(c *gin.Context) {
 }
 
 func dbAddNamespace(c *gin.Context, data map[string]interface{}) {
+	fmt.Println("Add Namespace 1")
 	var ns Namespace
 
 	ns.Prefix = data["prefix"].(string)
 	pubkeyData, _ := json.Marshal(data["pubkey"].(map[string]interface{}))
 	ns.Pubkey = string(pubkeyData)
 	
-	if err := c.ShouldBindJSON(&ns); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	fmt.Println(ns)
 	err := addNamespace(db, &ns)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -436,35 +432,3 @@ func getOpenIDConfiguration(c *gin.Context) {
 	prefix := c.Param("prefix")
 	c.JSON(http.StatusOK, gin.H{"status": "getOpenIDConfiguration is not implemented", "prefix": prefix})
 }
-
-// func cliUpdateNamespace(c *gin.Context) {
-// 	var ns Namespace
-// 	if err := c.ShouldBindJSON(&ns); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	err := updateNamespace(db, &ns)
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{"status": "success"})
-// }
-
-// func registerANamespace(c *gin.Context) {
-// 	c.JSON(http.StatusOK, gin.H{"status": "Register a new namespace"})
-// }
-
-// func cliListNamespaces(c *gin.Context) {
-// 	// Your function here
-// 	c.JSON(http.StatusOK, gin.H{"status": "List all namespaces"})
-// }
-
-// func dbDeleteNamespace(c *gin.Context) {
-// 	prefix := c.Param("prefix")
-
-// 	// Your function here
-// 	c.JSON(http.StatusOK, gin.H{"status": "Delete Namespace", "prefix": prefix})
-// }
